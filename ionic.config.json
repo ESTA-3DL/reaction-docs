@@ -1,0 +1,7 @@
+{
+  "name": "marketplace-react-amplify",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
