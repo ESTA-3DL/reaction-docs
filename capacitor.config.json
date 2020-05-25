@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "marketplace-react-amplify",
+  "appName": "reaction-code-sample",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "build",
