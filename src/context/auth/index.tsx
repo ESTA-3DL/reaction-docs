@@ -6,7 +6,7 @@ import { useAuthHttp } from "hooks/useAuthHttp";
 import { Props } from "includes/types";
 
 interface UserContext {
-  state: UserModel;
+  user: UserModel;
   login: (indentifier: string, password: string) => void;
   logout: () => void;
   isAuthenticated: () => boolean;
@@ -39,7 +39,7 @@ const ContextProvider: React.FC = (props: Props) => {
 
   return (
     <Context.Provider
-      value={{ state, login, logout, isAuthenticated } as UserContext}>
+      value={{ user: state, login, logout, isAuthenticated } as UserContext}>
       {props.children}
     </Context.Provider>
   );

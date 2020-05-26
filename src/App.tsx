@@ -1,16 +1,14 @@
 import React from "react";
-import Menu from "./components/Menu";
 
-import ShoppingCart from "./pages/ShoppingCart";
-import ProductsPage from "./pages/ProductsPage";
+import LoginPage from "pages/LoginPage";
+import ShoppingCart from "pages/ShoppingCart";
+import ProductsPage from "pages/ProductsPage";
 
-import { IonApp, IonRouterOutlet, IonSplitPane } from "@ionic/react";
+import { IonApp, IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
 
-import ErrorContextProvider from "context/error";
-import AuthContextProvider from "context/auth/";
-import StoreContextProvider from "context/store/";
+import GlobalContextProvider from "context/global";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -30,27 +28,24 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import { CookiesProvider } from "react-cookie";
 
 const App: React.FC = () => {
   return (
-    <ErrorContextProvider>
-      <AuthContextProvider>
-        <StoreContextProvider>
-          <IonApp>
-            <IonReactRouter>
-              <IonSplitPane contentId='main'>
-                <Menu />
-                <IonRouterOutlet id='main'>
-                  <Route path='/cart' component={ShoppingCart} exact />
-                  <Route path='/products' component={ProductsPage} />
-                  <Redirect from='/' to='/products' exact />
-                </IonRouterOutlet>
-              </IonSplitPane>
-            </IonReactRouter>
-          </IonApp>
-        </StoreContextProvider>
-      </AuthContextProvider>
-    </ErrorContextProvider>
+    <GlobalContextProvider>
+      <CookiesProvider>
+        <IonApp>
+          <IonReactRouter>
+            <IonRouterOutlet id='main'>
+              <Route path='/login' component={LoginPage} exact />
+              <Route path='/cart' component={ShoppingCart} exact />
+              <Route path='/products' component={ProductsPage} exact />
+              <Redirect from='/' to='/login' exact />
+            </IonRouterOutlet>
+          </IonReactRouter>
+        </IonApp>
+      </CookiesProvider>
+    </GlobalContextProvider>
   );
 };
 

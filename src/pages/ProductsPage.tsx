@@ -13,35 +13,67 @@ import {
   IonModal,
   IonButton,
   IonFooter,
+  useIonViewDidEnter,
+  useIonViewDidLeave,
+  useIonViewWillEnter,
+  useIonViewWillLeave,
 } from "@ionic/react";
 
 import { useUserContext } from "context/auth/";
 import { useErrorContext } from "context/error";
 import { useStoreContext } from "context/store";
-
-import { Props } from "includes/types";
+import { useCookies } from "react-cookie";
 
 import ProductModel from "models/ProductModel";
 import ProductListItem from "components/ProductListItem";
 import ShoppingCartPreview from "components/ShoppingCartPreview";
+// import { RouteComponentProps } from "react-router-dom";
 
-const ProductsPage: React.FC<Props> = () => {
+const ProductsPage: React.FC = ({ match, history }: any) => {
   const authContext = useUserContext();
   const errorContext = useErrorContext();
   const storeContext = useStoreContext();
 
   const [selectedProduct, setSelectedProduct] = React.useState<ProductModel>();
 
-  function login() {
-    authContext.login("nosreg216", "FB6s4D$j4xQa6zV$");
-    // authContext.login("nosreg216", "password");
+  const [cookies] = useCookies(["username"]);
+
+  function log(text: string, color: string = "red"): void {
+    console.log(`%c${text}`, `color:${color}`);
   }
 
-  React.useEffect(() => {
-    // login();
-    storeContext.updateProducts();
-    // authContext.login("nosreg216", "password");
-  }, []);
+  useIonViewDidEnter(() => {
+    console.log("[Product] ionViewDidEnter event fired");
+    log("Logged in as " + cookies.username);
+    if (cookies.username) {
+      storeContext.updateProducts();
+    } else {
+      log("Not logged in");
+      history.push("/login");
+    }
+  });
+
+  useIonViewDidLeave(() => {
+    console.log("[Product] ionViewDidLeave event fired");
+  });
+
+  useIonViewWillEnter(() => {
+    console.log("[Product] ionViewWillEnter event fired");
+    // log("[Product] isAuthenticated:" + authContext.isAuthenticated());
+  });
+
+  useIonViewWillLeave(() => {
+    console.log("[Product] ionViewWillLeave event fired");
+  });
+
+  // React.useEffect(() => {
+  //   // console.log("authContext.isAuthenticated:", authContext.isAuthenticated());
+  //   // if (authContext.isAuthenticated() === false) {
+  //   //   return history.push("/login");
+  //   // }
+  //   console.log("useEffect updateProducts");
+  //   storeContext.updateProducts();
+  // }, [authContext.user]);
 
   return (
     <IonPage>
@@ -56,9 +88,7 @@ const ProductsPage: React.FC<Props> = () => {
       </IonHeader>
 
       <IonContent fullscreen>
-        <button onClick={() => login()}>
-          {authContext.isAuthenticated() ? "Logged in" : "Logged out"}
-        </button>
+        <button onClick={() => authContext.logout()}>Log out</button>
         <IonGrid>
           <IonRow className='ion-align-items-center'>
             {storeContext.store.products.map(product => (
@@ -93,7 +123,7 @@ const ProductsPage: React.FC<Props> = () => {
 
       <IonFooter>
         <IonButton onClick={() => storeContext.updateProducts()}>
-          Add Item
+          Update Item List
         </IonButton>
       </IonFooter>
     </IonPage>
